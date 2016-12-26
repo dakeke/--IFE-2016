@@ -17,6 +17,6 @@
 * go 移动一格<br>
 可在指令后面加上整数，表示执行几次<br>
 
-参考资料<br>
-* 'JavaScript入门篇'
-* 'MDN JavaScript'
+###参考资料<br>
+* [JavaScript入门篇](http://www.imooc.com/learn/36)
+* [MDN JavaScript](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript)
