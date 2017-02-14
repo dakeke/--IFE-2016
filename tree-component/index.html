@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>树形组件</title>
+  <style type="text/css">
+    fieldset{
+      width: 50%;
+      margin:0 auto;
+    }
+
+    .fold{
+      background: url(images/fold.png) no-repeat;
+      background-position: 0;
+    }
+    .unfold{
+      background: url(images/unfold.png) no-repeat;
+      background-position: 0;
+    }
+    .wrap{
+      margin-left: 10px;
+      margin-top: 20px;
+    }
+    p{
+      text-indent: 15px;
+      color:#6898c2;
+      cursor: pointer;
+      margin-top: 0;
+      height: 20px;
+      width: 250px;
+    }
+
+    .div2{
+      margin-left: 15px;
+      font-size: 90%;
+    }
+    .div3{
+      margin-left: 20px;
+      font-size:80%;
+    }
+    .mdiv{
+      font-size: 100%;
+    }
+
+    p:hover>img{
+      display: inline;
+    }
+    img{
+      margin-left: 70px;
+      vertical-align: top;
+      width: 18px;
+      height: 18px;
+      display: none;
+    }
+    .img2{
+      margin-left: 10px;
+      width: 20px;
+      height: 20px;
+    }
+    .hiddle{
+      display: none;
+    }
+    html{
+      -webkit-user-select:none ;
+      -moz-user-select:none ;
+      -ms-user-select: none;
+      -o-user-select:none ;
+      user-select: none;
+    }
+
+  </style>
+</head>
+<body>
+  <fieldset class="tree-module">
+    <legend>树形组件</legend>
+    <input type="text" name="search">
+    <button>搜索</button>
+    <button>清除</button>
+    <div class="wrap">
+      <div class="div1" id="div1"><p class="fold">学校<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p>
+        <div class="div2"><p class="unfold">通信学院<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p>
+          <div class="div3 hiddle"><p >通信工程<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p></div>
+          <div class="div3 hiddle"><p >信息工程<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p></div>
+          <div class="div3 hiddle"><p >电子信息工程<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p></div>
+        </div>
+        <div class="div2"><p class="unfold">计算机学院<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p>
+          <div class="div3 hiddle"><p >Java<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p></div>
+          <div class="div3 hiddle"><p >JavaScript<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p></div>
+          <div class="div3 hiddle"><p >C<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p></div>
+        </div>
+        <div class="div2"><p class="unfold">经济学院<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p>
+          <div class="div3 hiddle"><p >金融<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p></div>
+          <div class="div3 hiddle"><p >会计<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p></div>
+          <div class="div3 hiddle"><p >审计<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p></div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+  <script type="text/javascript">
+  var wrap=document.getElementsByClassName('wrap')[0],
+      input=document.getElementsByTagName('input')[0],
+      search=document.getElementsByTagName('button')[0],
+      del=document.getElementsByTagName('button')[1],
+      div1=document.getElementsByClassName('div1')[0],
+      add=document.getElementsByClassName('img1'),
+      clear=document.getElementsByClassName('img2'),
+      list=[],z=0;
+
+  //广度优先
+  function traverseBF(node){
+    if(node){
+    list.push(node);
+    traverseBF(node.nextElementSibling);
+    node=list[flag++];
+    traverseBF(node.firstElementChild);
+    }
+  }
+
+  //折叠
+    function fold(target){
+      for(var i=0,len=target.parentNode.children.length;i<len;i++){
+            target.parentNode.children[i].className+=' hiddle';
+          }
+      target.className='unfold';
+    }
+    //展开
+    function unfold(target){
+         for(var i=0,len=target.parentNode.children.length;i<len;i++){
+            var s=target.parentNode.children[i].className.split(/hiddle/)[0];
+            target.parentNode.children[i].className=s;
+          }
+    }
+
+  function init(){
+    // 搜索事件
+    search.onclick=function(){
+      list=[],flag=0;//全局变量
+      traverseBF(div1);
+      var m=0;
+      for(var i=0,len=list.length;i<len;i++){
+        if(list[i].innerHTML.split(/[\s<]/)[0]===input.value){
+          list[i].style.color='red';
+          node=list[i];
+          while(node.parentNode.parentNode){
+            unfold(node);
+            if(node.parentNode.parentNode.children[0].nodeName=='P'){
+            node.parentNode.parentNode.children[0].className='fold';
+            }
+            node=node.parentNode;
+          }
+          m++;
+        }
+      }
+      if(m==0){
+        alert('没有该结点');
+        input.value='';
+      }
+    }
+    // 清除事件
+    del.onclick=function(){
+      input.value='';
+      if(list.length!=0){
+        for(var i=0;i<list.length;i++){
+          list[i].style.color='#6898c2';
+        }
+    }
+    }
+    //add and delete
+    wrap.onclick=function(event){
+      target=event.target;
+
+      if(target.className=='img2'){
+        target.parentNode.parentNode.parentNode.removeChild(target.parentNode.parentNode);
+      }
+      if(target.className=='img1'){
+        unfold(target.parentNode);
+        target.parentNode.className='fold';
+        var addcontent=prompt('请输入结点内容','');
+          if(addcontent!=null){
+          if(target.parentNode.parentNode.lastElementChild.className && target.parentNode.parentNode.lastElementChild.className.toString().search(/^div/)>-1){
+
+            target.parentNode.parentNode.innerHTML+='<div class="'+target.parentNode.parentNode.lastElementChild.className+'"</div><p>'+addcontent+'<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p>';
+            target.parentNode.className='unfold';
+          }
+          else{
+            target.parentNode.parentNode.innerHTML+='<div style="font-size:100%;margin-left:'+(target.parentNode.parentNode.style.marginLeft+10)+'px;"</div><p>'+addcontent+'<img class="img1" src="images/add.png"><img class="img2" src="images/delete.png"></p>';
+            target.parentNode.className='unfold';
+          }
+        }
+      }
+
+      if(target.nodeName=='P'){
+        if(target.parentNode.lastElementChild.nodeName=='DIV'){
+        if(target.className=='fold'){
+          fold(target);
+        }
+        else{
+          unfold(target);
+          target.className='fold';
+        }
+        }
+    }
+   }
+  }
+
+  init();
+  </script>
+</body>
+</html>
