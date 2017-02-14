@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>查询</title>
+  <style type="text/css">
+
+    .array div{
+      display: inline-block;
+      padding:10px;
+      background-color:red;
+      float: left;
+      margin:10px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <textarea></textarea>
+    <button id="in">输入</button>
+    <input type="text" name="search">
+    <button id="search">查询</button>
+  </div>
+
+  <div class="array">
+  </div>
+
+<script type="text/javascript">
+  var oin=document.getElementsByTagName('textarea')[0],
+      inBtn=document.getElementById("in"),
+      oarray=document.getElementsByClassName('array')[0],
+      searchbtn=document.getElementById('search'),
+      osearch=document.getElementsByTagName('input')[0];
+  var arr=[],r={};
+  //渲染数组内容
+  function arrayContent(){
+      var s='';
+      for(var i=0,len=arr.length;i<len;i++){
+        s+='<div>'+arr[i]+'</div>';
+      }
+      oarray.innerHTML=s;
+
+    }
+  //输入数组内容
+  function array(){
+    arr=oin.value.split(/[^0-9a-zA-Z\u4e00-\u9fa5]+/);
+    arrayContent();
+  }
+  //查询数组内容
+  function search(){
+    for(var i=0,len=arr.length;i<len;i++){
+      if(arr[i].indexOf(osearch.value)>=0){
+        oarray.childNodes[i].style.backgroundColor='yellow';
+
+      }
+
+      else{
+        oarray.childNodes[i].style.backgroundColor='red';
+      }
+     }
+}
+
+  //加上相应方法
+  function init(){
+    inBtn.onclick=array;
+    searchbtn.onclick=search;
+  }
+  init();
+
+</script>
+</body>
+</html>
