@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>表单验证</title>
+  <style type="text/css">
+    html{
+      font-size:16px;
+      color:#222;
+      font-family: 微软雅黑;
+    }
+    form,div{
+      width: 600px;
+      height: 300px;
+      margin:0 auto;
+      margin-top: 60px;
+      text-align: center;
+    }
+    label{
+      font-weight: bold;
+      margin-right: 20px;
+
+    }
+    input{
+      height: 30px;
+      width:250px;
+      border:1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .button{
+      width:80px;
+      height: 30px;
+      color:white;
+      text-align: center;
+      background-color:#586090;
+      border: 1px solid #586090;
+      border-radius: 5px;
+      margin-left: 20px;
+      font-size: 16px;
+    }
+    p{
+      color:#ccc;
+      font-size: 14px;
+      margin: 5px;
+      width: 300px;
+      text-align: left;
+      margin-left: 200px;
+      margin-bottom:15px;
+      visibility: hidden;
+    }
+  /*  input:focus + p{
+      visibility: visible;
+    }*/
+    .input-wrong{
+      border: 1px solid red;
+    }
+    .p-wrong{
+      color:red;
+    }
+    .input-right{
+      border: 1px solid green;
+    }
+    .p-right{
+      color:green;
+    }
+    label[for='affirm']{
+      margin-left: -30px;
+    }
+  </style>
+</head>
+<body>
+ <form>
+   <label for="name">姓名</label>
+   <input type="text" id="name" value="">
+   <!-- <input type="button" value="验证" class="button"> -->
+   <p class="p1" id="p1">必填，长度为4~16个字符</p>
+
+   <label for='password'>密码</label>
+   <input type="password" id="password">
+   <p class="p2" id="p2">必填，长度为4~16个字符，数字与字母组合</p>
+
+   <label for='affirm'>密码确认</label>
+   <input type="password" id="affirm">
+   <p class="p3" id="p3">与上面密码一样</p>
+
+   <label for='email'>邮箱</label>
+   <input type="text" id="email">
+   <p class="p4" id="p4">填写正确的邮箱格式</p>
+
+   <label for='mobile'>手机</label>
+   <input type="text" id="mobile">
+   <p class="p5" id="p5">填写正确的手机号</p>
+
+   <input type="button" value="提交" class="button">
+ </form>
+ <script type="text/javascript">
+   var input=document.getElementsByTagName('input'),
+       btn=document.getElementsByClassName('button')[0],
+       p=document.getElementsByTagName('p'),
+       form=document.getElementsByTagName('form')[0],
+       password='',index=0;
+   function legth(cxt){
+    cxt=cxt.trim();
+    var inputLength=0;
+    for(var i=0,len=cxt.length;i<len;i++){
+        if(cxt.charCodeAt(i)>=0&&cxt.charCodeAt(i)<=128){
+          inputLength+=1;
+        }
+        else{
+          inputLength+=2;
+        }
+    }
+    return inputLength;
+   }
+
+   function addEvent(ele,type,handler){
+    if(ele.addEventlistener){
+      ele.addEventlistener(type,handler);
+    }
+    else if(ele.attachEvent){
+      ele.attachEvent('on'+type,handler);
+    }else{
+      ele['on'+type]=handler;
+    }
+   }
+   //name验证
+   function test(ele){
+    var flag='';
+    if(ele.value==''||ele.value==null){
+      ele.className='input-wrong';
+      ele.nextElementSibling.className='p-wrong';
+      ele.nextElementSibling.innerHTML='不能为空';
+    }else{
+
+
+    switch(ele.id){
+      case 'name':if(legth(ele.value)>=4&&legth(ele.value)<=16){index++;flag='r';ele.nextElementSibling.innerHTML='名称正确';}
+                  else{flag='w';ele.nextElementSibling.innerHTML='长度为4~16个字符';};break;
+      case 'password':if(/[a-zA-z0-9_]{6,16}/.test(ele.value)){index++;flag='r';ele.nextElementSibling.innerHTML='密码正确';password=ele.value;}
+                      else{flag='w';ele.nextElementSibling.innerHTML='输入错误，请输入6-16位数字英文字母或下划线';};break;
+      case 'affirm':if(ele.value==password){index++;flag='r';ele.nextElementSibling.innerHTML='密码正确';}
+                    else{flag='w';ele.nextElementSibling.innerHTML='密码不一致';ele.value='';};break;
+     // /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/邮箱正则表达式？
+      case 'email':if(/^\S+@\S+\.\S+/.test(ele.value)){index++;flag='r';ele.nextElementSibling.innerHTML='邮箱正确';}
+                   else{flag='w';ele.nextElementSibling.innerHTML='邮箱格式不正确';};break;
+      case 'mobile':if(/^1\d{10}$/.test(ele.value)){index++;flag='r';ele.nextElementSibling.innerHTML='号码正确';}
+                    else{flag='w';ele.nextElementSibling.innerHTML='号码输入不正确';}
+    }
+  }
+    if(flag=='r'){
+      ele.className='input-right';
+      ele.nextElementSibling.className='p-right';
+    }
+    if(flag=='w'){
+      ele.className='input-wrong';
+      ele.nextElementSibling.className='p-wrong';
+    }
+   }
+
+
+
+
+   window.onload=function(){
+    for(var i=0,len=input.length-1;i<len;i++){
+      addEvent(input[i],'focus',function(e){
+        e=event||window.event;
+        target=e.target;
+        target.nextElementSibling.style.visibility='visible';
+      })
+      addEvent(input[i],'blur',function(e){
+        e=event||window.event;
+        target=e.target;
+        if(target.id){
+          test(target);
+        }
+
+      })
+    }
+    addEvent(btn,'click',function(){
+      for(var i=0,len=input.length-1;i<len;i++){
+        test(input[i]);
+        input[i].nextElementSibling.style.visibility='visible';
+      }
+      console.log(index)
+      if(index==10){
+        alert('提交正确');
+      }else{
+        alert('提交错误');
+      }
+    })
+    }
+ </script>
+</body>
+</html>
