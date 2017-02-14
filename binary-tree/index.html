@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>binary tree</title>
+  <style type="text/css">
+    .root,.c1,.c2,.c3{
+      display: flex;
+      align-items: center;
+      justify-content:space-around;
+    }
+    .root{
+      border:1px solid black;
+      width:800px;
+      margin:0 auto;
+      height: 500px;
+
+    }
+    .c1{
+      width:370px;
+      height: 460px;
+      border: 1px solid red;
+    }
+    .c2{
+      width:160px;
+      height: 420px;
+      border: 1px solid green;
+    }
+    .c3{
+      width:60px;
+      height: 380px;
+      border: 1px solid blue;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="root" id="root">
+   <div class="c1">
+    <div class="c2">
+      <div class="c3">
+      </div>
+      <div class="c3"></div>
+    </div>
+    <div class="c2">
+      <div class="c3"></div>
+      <div class="c3"></div>
+    </div>
+   </div>
+
+   <div class="c1">
+    <div class="c2">
+      <div class="c3">
+      </div>
+      <div class="c3"></div>
+    </div>
+    <div class="c2">
+      <div class="c3"></div>
+      <div class="c3"></div>
+    </div>
+   </div>
+  </div>
+  <button class="dlr">前序</button>
+  <button class="ldr">中序</button>
+  <button class="lrd">后序</button>
+  <script type="text/javascript">
+    var oroot=document.getElementById("root");
+    var nodelist=[],timer;
+    function preorder(node){
+      if(node!=null){
+        nodelist.push(node);
+        preorder(node.firstElementChild);
+        preorder(node.lastElementChild);
+      }
+    }
+
+    function inorder(node){
+      if(node!=null){
+        inorder(node.firstElementChild);
+        nodelist.push(node);
+        inorder(node.lastElementChild);
+      }
+    }
+
+    function postorder(node){
+      if(node!=null){
+        postorder(node.firstElementChild);
+        postorder(node.lastElementChild);
+        nodelist.push(node);
+      }
+    }
+
+    function bgcolor() {
+      var i=0;
+      clearInterval(timer);
+
+      var initNode=document.getElementsByTagName('div');
+      for(var j=0,len=initNode.length;j<len;j++){
+      initNode[j].style.backgroundColor='#fff';
+      }
+
+      nodelist[0].style.backgroundColor='blue';
+      timer=setInterval(function(){
+
+          i++;
+         if(i<nodelist.length){
+          nodelist[i-1].style.backgroundColor="#fff";
+          nodelist[i].style.backgroundColor='blue';
+       }
+         else{
+          nodelist[nodelist.length-1].style.backgroundColor='#fff';
+          clearInterval(timer);
+         }
+      } ,500);
+    }
+    function init(){
+      document.getElementsByClassName("dlr")[0].onclick=function(){
+        nodelist=[];
+        preorder(oroot);
+        bgcolor();
+      }
+      document.getElementsByClassName("ldr")[0].onclick=function(){
+        nodelist=[];
+        inorder(oroot);
+        bgcolor();
+      }
+      document.getElementsByClassName("lrd")[0].onclick=function(){
+        nodelist=[];
+        postorder(oroot);
+        bgcolor();
+      }
+    }
+    init();
+  </script>
+</body>
+</html>
