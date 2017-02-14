@@ -1,0 +1,101 @@
+.wrap{
+  width: 440px;
+  height: 440px;
+  margin:0 auto;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  position: relative;
+}
+#square,#s1,#s2,td{
+  margin: 0;
+  padding: 0;
+}
+tr{
+
+  box-sizing: border-box;
+}
+table{
+  width: 440px;
+  height: 440px;
+  text-align: center;
+  border-collapse: collapse;
+  box-sizing: border-box;
+}
+.border-style td{
+  border:none;
+  border-bottom: 1px solid black;
+  box-sizing: border-box;
+}
+.border-style td:first-child{
+  border-bottom: none;
+}
+tr:not(.border-style) td:first-child{
+  border:none;
+  border-right: 1px solid black;
+}
+tr:not(.border-style) td:last-child{
+  border-right: 1px solid black;
+}
+tr:last-child td{
+  border-bottom: 1px solid black;
+}
+td{
+  width: 40px;
+  height: 40px;
+  box-sizing: border-box;
+  border:1px solid #ccc;
+}
+#in{
+  margin-left: 250px;
+}
+
+.square{
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+  position: absolute;
+  background-color: red;
+  /*11处的位置*/
+  top:41px;
+  left: 41px;
+}
+/* .s-left{
+  transform: rotate(0deg);
+  transition: all 0.5s;
+}
+.s-right{
+  transform: rotate(180deg);
+  transition: all 1s;
+}
+.s-top{
+  transform: rotate(90deg);
+  transition: all 1s;
+}
+.s-bot{
+  transform: rotate(270deg);
+  transition: all 1s;
+} */
+#blue{
+  position: relative;
+
+  background-color: blue;
+}
+.left{
+  width: 25%;
+  height: 40px;
+}
+.top{
+  width: 40px;
+  height: 25%;
+}
+.right{
+  width: 25%;
+  height: 40px;
+  left: 75%;
+}
+.bottom{
+  width: 40px;
+  height: 25%;
+  top: 75%;
+}
+
