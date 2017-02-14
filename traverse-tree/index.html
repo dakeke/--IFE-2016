@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>遍历树</title>
+  <style type="text/css">
+    div:not(.div1){
+       border: 1px solid black;
+       display: flex;
+       justify-content: space-around;
+       align-content: center;
+       box-sizing: border-box;
+       padding: 10px;
+       margin:10px;
+    }
+       ::selection{
+      background-color: #fff;
+    }
+
+    .div5{
+      /*width:30px;*/
+      height: 50px;
+    }
+    .div4{
+      /*width:50px;*/
+      height: 100px;
+    }
+    .div3{
+      /*width:300px;*/
+      height: 150px;
+    }
+    .div2{
+      /*width: 1000px;*/
+      height: 180px;
+    }
+    .div2:nth-child(3){
+      height: 50px;
+    }
+    .div1{
+      width:800px;
+      height: 480px;
+      border: 1px solid black;
+      margin:0 auto;
+      margin-top: 30px;
+      margin-bottom: 20px;
+    }
+    span{
+      display: block;
+      margin-left: 300px;
+    }
+
+
+  </style>
+</head>
+<body>
+<div id='wrap'>
+  <div class="div1">Super
+    <div class="div2">Cat
+      <div class="div3">Apple
+        <div class="div4">Pear</div>
+        <div class="div4">Pig</div>
+        <div class="div4">Cola</div>
+        <div class="div4">Soccer</div>
+      </div>
+      <div class="div3">Phone</div>
+      <div class="div3">
+        <div class="div4">Book</div>
+        <div class="div4">School</div>
+      </div>
+    </div>
+
+    <div class="div2">Note
+      <div class="div3">Human
+        <div class="div4">Code</div>
+        <div class="div4">Operate</div>
+        <div class="div4">Man</div>
+      </div>
+      <div class="div3">Program
+        <div class="div4">Bement
+          <div class="div5">Cat</div>
+        </div>
+        <div class="div4">Glass</div>
+
+    </div>
+    </div>
+    <div class="div2">Fish</div>
+  </div>
+  </div>
+  <span>
+  <button id="depth1">深度优先遍历</button>
+  <button id="breadth1">广度优先遍历</button>
+
+  <input type="text" name="search">
+  <button id="del">删除</button>
+  <input type="text" name="add">
+  <button id="add">添加</button>
+  </span>
+  <script type="text/javascript">
+    var oroot=document.getElementsByClassName('div1')[0],
+        depth1=document.getElementById('depth1'),
+        del=document.getElementById('del'),
+        breadth1=document.getElementById('breadth1'),
+        add=document.getElementById('add'),
+        input=document.getElementsByTagName('input')[0],
+        adddiv=document.getElementsByTagName('input')[1],
+        wrap=document.getElementById('wrap');
+    var list=[],timer,flag=0;
+
+    // 深度优先搜索
+    function traverseDF(node){
+
+      if(node!=null){
+        list.push(node);
+        for(var i=0,len=node.children.length;i<len;i++){
+          traverseDF(node.children[i]);
+        }
+      }
+    }
+    // 广度优先搜索
+    function traverseBF(node){
+      if(node){
+        list.push(node);
+        traverseBF(node.nextElementSibling);
+        node=list[flag++];
+        if(node.firstElementChild)
+           traverseBF(node.firstElementChild);
+      }
+    }
+
+    // 演示动画
+    function render(){
+      clearInterval(timer);
+
+      var div=document.getElementsByTagName('div');
+      for(var i=0,len=div.length;i<len;i++){
+        div[i].style.backgroundColor='#fff';
+      }
+      list[0].style.backgroundColor='blue';
+      var i=0;
+
+      timer=setInterval(function(){
+
+        i++;
+        if(i<list.length){
+          if(list[i-1].innerHTML.split(/[\s<]/)[0]===input.value){
+            list[i-1].style.backgroundColor='red';
+            list[i].style.backgroundColor='blue';
+          }
+          else{
+          list[i].style.backgroundColor='blue';
+          list[i-1].style.backgroundColor='#fff';
+          }
+        }
+
+        else{
+          clearInterval(timer);
+          if(list[i-1].innerHTML.split(/[\s<]/)[0]===input.value){
+            list[i-1].style.backgroundColor='red';
+          }
+          else{list[i-1].style.backgroundColor='#fff';}
+
+        }
+      },300);
+    }
+
+    // 主函数
+    function init(){
+     wrap.onclick=function(event){
+       target=event.target;
+       if(target){
+        target.style.backgroundColor='#0cc';
+        for(var i=0,len=target.children.length;i<len;i++){
+          target.children[i].style.backgroundColor='#fff';
+        }
+
+      }
+       del.onclick=function(){
+          target.parentNode.removeChild(target);
+        }
+       add.onclick=function(){
+        target.innerHTML+='<div style="height:'+(target.offsetHeight-50)+'px;">'+adddiv.value+'</div>';
+      }
+
+     }
+     wrap.ondblclick=function(event){
+      target=event.target;
+      target.style.backgroundColor='#fff';
+
+     }
+      depth1.onclick=function(){
+        list=[];
+        traverseDF(oroot);
+        render();
+      }
+      breadth1.onclick=function(){
+         list=[];
+         flag=0;//每次的局部变量非常重要，下次写在单独的函数里
+        traverseBF(oroot);
+        render();
+      }
+
+}
+
+    init();
+  </script>
+</body>
+</html>
