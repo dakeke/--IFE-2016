@@ -27,4 +27,8 @@
 
 [树形组件](https://dakeke.github.io/--IFE-2016/tree-component)
 
-[排序表格](https://dakeke.github.io/--IFE-2016/sort-table)
+[浮出层](https://dakeke.github.io/--IFE-2016/surfaced-layer)
+
+[浮出层](https://dakeke.github.io/--IFE-2016/surfaced-layer)
+
+
