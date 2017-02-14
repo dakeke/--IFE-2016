@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>calendar</title>
+  <style type="text/css">
+    .wrap{
+      width: 500px;
+      margin: 0 auto;
+      margin-top: 100px;
+    }
+    .calendar-content{
+      width: 300px;
+      min-height: 200px;
+      border:1px solid #ccc;
+      margin-top: 20px;
+      cursor:default;
+      display: none;
+    }
+    .calendar-head{
+      height: 30px;
+      background-color: rgb(200,27,1);
+      width: 100%;
+      text-align: center;
+      color: white;
+      line-height: 30px;
+    }
+    label select{
+      border:1px solid rgb(200,27,1);
+      margin-right: 5px;
+    }
+
+    .left{
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 10px solid #fff;
+      margin-top: 7px;
+      margin-left: 8px;
+      float: left;
+    }
+    .right{
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-left: 10px solid #fff;
+      float: right;
+      margin-right: 8px;
+      margin-top: 7px;
+    }
+    .week,.day{
+      width: 100%;
+      height:28px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      font-size: 14px;
+    }
+    .date{
+      font-size: 10px;
+    }
+    .red,.day span:first-child,.day span:last-child{
+      color:rgb(200,27,1);
+    }
+    .week span,.day span{
+      display: block;
+      width:40px;
+      text-align: center;
+    }
+    #grey{
+      color:#ccc;
+    }
+    .bgcolor-r{
+      background-color: rgb(200,200,1);
+    }
+    .bgcolor-w{
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>请输入日期</h1>
+    <label for="calendar">请输入日期：</label><input type="text" name="calendar" id="calendar">
+    <div class="calendar-content">
+      <div class="calendar-head">
+        <label for="year"><select id="year"></select>年</label>
+        <label for="month"><select id="month"></select>月</label>
+        <div class="left"></div>
+        <div class="right"></div>
+      </div>
+      <div class="week">
+        <span class="red">日</span>
+        <span>一</span>
+        <span>二</span>
+        <span>三</span>
+        <span>四</span>
+        <span>五</span>
+        <span class="red">六</span>
+      </div>
+      <div class="date" id="date"></div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function geti(id){
+      return document.getElementById(id);
+    }
+    function getc(cln){
+      return document.getElementsByClassName(cln);
+    }
+
+    var oin=geti('calendar'),
+        year=geti('year'),
+        month=geti('month'),
+        left=getc('left')[0],
+        right=getc('right')[0],
+        date=geti('date'),
+        calendar=getc('calendar-content')[0],
+        listY=[],
+        listM=[],
+        listD=[],
+        flag=0,n=1,
+        startDay=new Date(2006,0,1),
+        endDay=new Date(2018,11,31);
+
+    // 年份显示函数
+    function showYear(){
+      var len=endDay.getYear()-startDay.getYear()+1,
+          s='';
+      for(var i=0;i<len;i++){
+        listY.push(startDay.getFullYear()+i);
+        s+='<option>'+(startDay.getFullYear()+i)+'</option>';
+      }
+      year.innerHTML=s;
+    }
+    // 月份显示函数
+    function showMonth(){
+      var len=12,s='';
+      for(var i=0;i<len;i++){
+        listM.push(i+1);
+        s+='<option>'+(i+1)+'</option>';
+      }
+      month.innerHTML=s;
+    }
+
+    // 渲染日期  还可用选中的月份减去上一个月的再除以秒数就可以得到这个月的天数
+    function renderDate(){
+      var curDate=new Date(year.value,month.value-1,1),
+          nextDate=new Date(year.value,month.value,1),
+          lastDate=new Date(year.value,month.value-2,1);
+      var weekday=curDate.getDay(),
+          ms=nextDate.getTime()-curDate.getTime(),
+          days=ms/(1000*3600*24),
+          lastDays=(curDate.getTime()-lastDate.getTime())/(1000*3600*24),
+          weeks=(days+weekday)%7;
+      if(weeks==0){weeks=(days+weekday)/7;}
+      else{weeks=(days+weekday)/7+1;}
+      weeks=parseInt(weeks);
+      var dayn=days;
+      flag=weekday;
+      listD[0]=[];
+      if(weekday!=0){// 不是从头开始则设置上一个月的日期
+        for(var i=weekday-1;i>=0;i--){
+          listD[0][i]=lastDays--;
+
+        }
+        for(var i=weekday;i<7;i++){
+          days--;
+          listD[0][i]=dayn-days;
+        }
+      }
+      else{
+        for(var j=0;j<7;j++){
+          days--;
+          listD[0][j]=dayn-days;
+        }
+      }
+
+      // 第二行开始依次显示，最后一行判断是否满足下个月可显示
+      for(var i=1;i<weeks-1;i++){
+        listD[i]=[];
+        for(var j=0;j<7;j++){
+          days--;
+          listD[i][j]=dayn-days;
+        }
+      }
+      listD[weeks-1]=[];
+
+      if(days!=0){
+        var z=days;
+        for(var i=0;i<z;i++){
+        days--;
+        listD[weeks-1][i]=dayn-days;
+
+        }
+        n=1;
+        for(var i=z;i<7;i++){
+          listD[weeks-1][i]=n++;
+        }
+      }
+
+    }
+
+    // 显示日期
+    function renderDay(){
+      var len=listD.length,
+          s='';
+      for(var i=0;i<len;i++){// 增加每行显示
+        s+='<div class="day"></div>';
+      }
+
+      date.innerHTML=s;
+      var oday=getc('day');
+      for(var i=0;i<oday.length;i++){// 一行中的具体日期
+        var ss='';
+        for(var j=0;j<7;j++){
+          if(listD[i][j])
+          ss+='<span>'+listD[i][j]+'</span>';
+        }
+        oday[i].innerHTML=ss;
+      }
+      for(var i=0;i<flag;i++){// 非本月灰色显示
+        oday[0].children[i].id='grey';
+      }
+      for(var i=7-n+1;i<7;i++){
+        oday[oday.length-1].children[i].id='grey';
+      }
+
+    }
+    // 上一个月
+    function lastMonth(){
+      curmth=month.value;
+      for(var i=0,len=listM.length;i<len;i++){
+        if(listM[i]==curmth){
+          break;
+        }
+      }
+      if(listM[i]==1){
+        if(parseInt(year.value)==startDay.getFullYear()){
+          alert('日历从2006年1月1日开始');
+        }else{
+        year.value=year.value-1;
+        month.value=12;
+        }
+      }else{
+      month.value=listM[i-1];
+      }
+    }
+
+    // 下一月
+    function nextMonth(){
+      curmth=month.value;
+      for(var i=0,len=listM.length;i<len;i++){
+        if(listM[i]==curmth){
+          break;
+        }
+      }
+      if(listM[i]==12){
+        if(parseInt(year.value)==endDay.getFullYear()){
+          alert('日历到2018年12月31日开始');
+        }else{
+        year.value=year.value+1;
+        month.value=1;
+        }
+      }else{
+      month.value=listM[i+1];
+      }
+    }
+
+
+    function init(){
+      renderDate();
+      renderDay();
+    }
+    window.onload=function(){
+      showYear();
+      showMonth();
+      init();
+      oin.onfocus=function(){
+        calendar.style.display='block';
+      }
+      year.onchange=function(){
+        listD=[];// 全局变量注意清空
+        init();
+      }
+      month.onchange=function(){
+        listD=[];
+        init();
+      }
+      left.onclick=function(){
+        listD=[];
+        lastMonth();
+        init();
+      }
+      right.onclick=function(){
+        listD=[];
+        nextMonth();
+        init();
+      }
+      date.onclick=function(event){
+        target=event.target;
+        for(var i=0;i<date.children.length;i++){
+          for(var j=0;j<7;j++){
+            date.children[i].children[j].className='bgcolor-w';
+          }
+        }
+        if(target.id=='grey'&&parseInt(target.innerHTML)>10){
+          listD=[];
+          lastMonth();
+          init();
+        }
+        if(target.id=='grey'&&parseInt(target.innerHTML)<10){
+          listD=[];
+          nextMonth();
+          init();
+        }
+        oin.value=year.value+'-'+month.value+'-'+target.innerHTML;
+        target.className='bgcolor-r';
+        calendar.style.display='none';
+      }
+    }
+
+  </script>
+</body>
+</html>
